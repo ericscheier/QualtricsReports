@@ -38,8 +38,4 @@ emailReport <- function(email.params){
             file.descriptions = c("Your Survey Report"), # optional parameter
             debug = TRUE
             )
-  
-  # "eric.scheier.test@gmail.com"
-  # "_+XXk^3BJxQ=_3eM"
-  # https://www.google.com/settings/security/lesssecureapps
 }
