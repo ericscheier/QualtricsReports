@@ -1,9 +1,12 @@
 ---
 title: "Survey Report"
+output: html_document
 params:
-  age: input$age
-  name: input$name
-output: pdf_document
+  one: 0
+  two: 0
+  three: 0
+  four: 0
+  five: 10
 ---
 
 ```{r setup, include=FALSE, echo=FALSE}
@@ -12,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## R Markdown
 
-`r params$name` and `r params$age`
+`r params$one` and  `r params$two` and `r params$three` and `r params$four`
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
@@ -27,7 +30,7 @@ summary(cars)
 You can also embed plots, for example:
 
 ```{r pressure, echo=FALSE}
-plot(pressure)
+plot(cars[sample(nrow(cars), params$five), ])
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

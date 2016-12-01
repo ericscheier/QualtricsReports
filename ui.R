@@ -20,9 +20,10 @@ shinyUI(fluidPage(
   # Sidebar with a slider input for number of bins
   sidebarLayout(
     sidebarPanel(
-      textInput("name", "Name", "John"),
-      numericInput("age", "Age", 25),
-      downloadButton('report', label="Download")
+      textInput("email", "Email", "John"),
+      actionButton("email.button",label = "Email me a copy"),
+      downloadButton('report', label="Download PDF")#,
+      # textOutput('parameters')
     ),
 
     # Show a plot of the generated distribution
