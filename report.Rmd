@@ -15,17 +15,27 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## R Markdown
 
-`r params$one` and  `r params$two` and `r params$three` and `r params$four`
-
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+The document has parameters that can be determined by the URL served to the Shiny application. The defaults are defined in each document. Here are the parameters for this document:
 
-```{r cars}
-summary(cars)
+Parameter | Value
+------------- | -------------
+one | `r params$one`
+two | `r params$two`
+three | `r params$three`
+four | `r params$four`
+five | `r params$five`
+
+
+You can change these parameters by changing the URL, for instance try to visit: https://ericscheier.shinyapps.io/qualtricsreports/?one=10&two=20&three=30&four=40&five=50
+
+When you click the download or email buttons to the left, a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+# code is shown for reference but can be hidden
+params$one + params$two + params$three + params$four
 ```
-
-## Including Plots
 
 You can also embed plots, for example:
 
@@ -33,4 +43,4 @@ You can also embed plots, for example:
 plot(cars[sample(nrow(cars), params$five), ])
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Note that the number of datapoints in the above plot is determined by the URL parameter "five", which is currently set to equal `r params$five`.

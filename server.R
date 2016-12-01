@@ -68,8 +68,17 @@ shinyServer(function(input, output, session) {
       return(NULL)
     # Use isolate() to avoid dependency on input$email.button
     isolate({
-      email.params <- list(to=input$email, report=renderMyDocument(variables=parameters, mdType = "PDF"))
-      emailReport(email.params)
+      # validate(
+      #   need(try(emailMyDocument(parameters=parameters, email.address=input$email)),
+      #        'Error sending email, please try again.')
+      # )
+      tryCatch(emailMyDocument(parameters=parameters, email.address=input$email),
+               error=function(e) {
+                 print("Email unsuccessful")
+                 session$sendCustomMessage(type = 'testmessage',
+                                           message = 'Error sending email, please try again.')
+                 }
+               )
     })
   })
 

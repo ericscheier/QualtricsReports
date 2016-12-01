@@ -17,6 +17,15 @@ parseURL <- function(query, variable, parameters){
 # }
 
 renderMyDocument <- function(variables, mdType) { #, r_env=parent.frame()
+  src <- normalizePath('report.Rmd')
+  # temporarily switch to the temp dir, in case you do not have write
+  # permission to the current working directory
+  owd <- setwd(tempdir())
+  on.exit(setwd(owd))
+  file.copy(src, 'report.Rmd')
+  # file.copy('report.Rmd')
+  # out <- renderMyDocument(variables=parameters, mdType = "PDF")
+  # file.rename(out, file)
   rmarkdown::render("report.Rmd", params = variables, 
                     # envir = r_env, 
                     switch(mdType, 
@@ -38,4 +47,10 @@ emailReport <- function(email.params){
             file.descriptions = c("Your Survey Report"), # optional parameter
             debug = TRUE
             )
+}
+
+emailMyDocument <- function(parameters, email.address){
+  out <- renderMyDocument(variables=parameters, mdType = "PDF")
+  email.params <- list(to=email.address, report=out)
+  emailReport(email.params)
 }
