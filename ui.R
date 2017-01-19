@@ -32,6 +32,7 @@ shinyUI(fluidPage(
       textInput("email", "Email", placeholder = "your@email.com"),
       actionButton("email.button",label = "Email me a copy"),
       downloadButton('report', label="Download PDF"),
+      textOutput('parameters'),
       # This makes web page load the JS file in the HTML head.
       # The call to singleton ensures it's only included once
       # in a page. It's not strictly necessary in this case, but

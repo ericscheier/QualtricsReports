@@ -1,8 +1,36 @@
+blankIfNull <- function(log.entry){
+  if(!length(log.entry)){
+    log.entry <- NULL
+  }
+  if(is.null(log.entry)){
+    log.entry <- NA
+  }
+  if(is.na(log.entry)){
+    log.entry <- ""
+  }
+  log.entry <- as.character(log.entry)
+  return(log.entry)
+}
+
+logEvent <- function(session, url.parameters, event.variables,
+                     log.spreadsheet=gs_key("1oIjzlDp8j617Ngqo9BCJtkrL192OzgTzPdwFDH34rqM")){
+  params <- url.parameters[names(url.parameters)!="survey"]
+  redirect.url = blankIfNull(paste(lapply(names(params), function(x, params) paste(c(x,params[x]), collapse = "="), params=params), collapse="&"))
+  survey = blankIfNull(url.parameters$survey)
+  event = blankIfNull(event.variables$event)
+  notes = blankIfNull(event.variables$notes)
+  time = blankIfNull(Sys.time())
+  log.row = c(time, survey, event, notes, redirect.url)
+  print(log.row)
+  gs_add_row(ss=log.spreadsheet, ws="Log", input=log.row)
+}
+
 parseURL <- function(query, variable, parameters){
   if (!is.null(query[[variable]])) {
     print(paste0("reassigning ",variable," to be ",query[[variable]]))
-    parameters[[variable]] <<- as.numeric(query[[variable]])
+    parameters[[variable]] <- ifelse(variable != "survey", as.numeric(query[[variable]]), query[[variable]])
   }
+  return(parameters)
 }
 
 # parseURL = function(variable, parameters, query, session){
@@ -16,18 +44,44 @@ parseURL <- function(query, variable, parameters){
 #   # return(parameters)
 # }
 
-renderMyDocument <- function(variables, mdType) { #, r_env=parent.frame()
-  src <- normalizePath('report.Rmd')
+renderMyDocument <- function(variables, mdType, 
+                             log.spreadsheet=gs_key("1oIjzlDp8j617Ngqo9BCJtkrL192OzgTzPdwFDH34rqM")) { #, r_env=parent.frame()
+  if(is.null(variables$survey)){
+    print("survey is null")
+    survey.name <- "ExampleReport"
+  } else {
+    survey.name <- variables$survey
+  }
+  
+  reference.data <- data.frame(gs_read(ss=log.spreadsheet, ws = "Reference"))
+  dd <- reference.data[reference.data$Survey==survey.name,c("Parameter","Value")]
+  if(nrow(dd)){
+    ref.variables <- setNames(dd$Value, paste0("ref.",as.character(dd$Parameter)))
+    variables <- c(variables, ref.variables)
+  }
+  
+  report.name = paste0(survey.name,".Rmd")
+  src <- normalizePath(report.name)
   # temporarily switch to the temp dir, in case you do not have write
   # permission to the current working directory
-  owd <- setwd(tempdir())
-  on.exit(setwd(owd))
-  file.copy(src, 'report.Rmd')
+  # file.copy(from, to, overwrite = recursive, recursive = FALSE,
+  #           copy.mode = TRUE, copy.date = FALSE)
+  tempReport <- file.path(tempdir(), report.name)
+  file.copy(report.name, tempReport, overwrite = TRUE)
+  # owd <- setwd(tempdir())
+  # on.exit(setwd(owd))
+  # file.copy(src, report.name)
   # file.copy('report.Rmd')
   # out <- renderMyDocument(variables=parameters, mdType = "PDF")
   # file.rename(out, file)
-  rmarkdown::render("report.Rmd", params = variables, 
-                    # envir = r_env, 
+  # http://stackoverflow.com/questions/37018983/how-to-make-pdf-download-in-shiny-app-response-to-user-inputs
+  # https://shiny.rstudio.com/articles/generating-reports.html
+  # rmarkdown::render(tempReport, output_file = file,
+  #                   params = params,
+  #                   envir = new.env(parent = globalenv())
+  # )
+  rmarkdown::render(tempReport, params = variables, 
+                    envir = new.env(parent = globalenv()), 
                     switch(mdType, 
             PDF = pdf_document(), HTML = html_document(), Word = word_document(), Markdown = md_document()))
 }
