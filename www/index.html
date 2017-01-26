@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Learning For Purpose</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="css/lfp_style.css"/>
+    <!-- Custom Fonts -->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+
+
+    <script src="shared/jquery.js" type="text/javascript"></script>
+    <script src="shared/shiny.js" type="text/javascript"></script>
+    <script src="message-handler.js"></script>
+  </head>
+
+  <body>
+    <div class="container-fluid"> <!-- -->
+
+      <div class="row top-banner">
+        <div class="col-md-2">
+          <img class="img-responsive" src="LFP_vertical_tagline_logo.png"/>
+        </div>
+        <div class="col-md-10">
+          <h1>Your Personal Report</h1>
+          <div class="form-group shiny-input-container">
+            <input id="email" type="text" class="form-control" value="" placeholder="your@email.com"/>
+            <button id="email.button" type="button" class="btn btn-lg btn-default action-button">Email me a copy</button>
+            <button type="button" class="btn btn-lg btn-default action-button"><a id="report" class="shiny-download-link" href="" target="_blank"><i class="fa fa-download fa-lg"></i> Download PDF</a></button>
+          </div>
+        </div>
+      </div> <!-- End top-banner  -->
+
+    <div class="row">
+      <div class="left-navbar col-md-2">
+        <!--
+        <p><strong>Contents</strong></p>
+        <ul>
+          <li>R Markdown</li>
+          <li>Cylinder Distribution</li>
+          <li>Next text anchor</li>
+          <li>Even one more</li>
+        </ul>
+        -->
+      </div><!-- End left-navbar  -->
+
+      <div class="main-content col-md-10">
+
+        <div id="markdown" class="shiny-html-output"></div>
+      </div>
+    </div>
+  </div> <!-- End container-fluid  -->
+  </body>
+</html>
