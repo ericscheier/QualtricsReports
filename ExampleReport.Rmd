@@ -1,21 +1,46 @@
 ---
 title: "Survey Report"
-output: html_document
 params:
-  one: 1
-  two: 2
-  three: 15
-  four: 200
   five: 10
+  four: 200
+  one: 1
   ref.one: 0
-  survey: "ExampleReport"
+  survey: ExampleReport
+  three: 15
+  two: 2
+output: html_document
 ---
 
 ```{r setup, include=FALSE, echo=FALSE}
-# -I like you to set up a report CSS style using the ‘Learning for Purpose’ brand guidelines (see attached): font, logo, colours. The colours ideally so that once can call on them by name (e.g., “orange”, “grey”) for any given purpose such as a graph
 # -For the PDF report please set up a 1) cover page, 2) last page, 3) header and footer for normal pages with page number, dummy text and logo in it so I can further tweak.
 # -For the HTML report please set up Logo at top and bottom,
+
+# Mock params bit for testing only
+# params <- list(five=10,four=200,one=1,ref.one=0,survey='ExampleReport',three=15,two=2)
+
 knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+# Color palette:
+named.palette <- list(#YellowDark="#F2AF1C",
+                      YellowBright="#FBCC15",
+                      #GreenDark="#348F68",
+                      GreenBright="#41AF80",
+                      #RedDark="#CC4528",
+                      RedBright="#EC5627",
+                      #BlueDark="#0D7888",
+                      BlueBright="#178EAB",
+                      GreyDark="#5A595C"#,
+                      #GreyBright="#ECF0F1",
+                      #White="#FFFFFF",
+                      #Black="#000000"
+                      )
+
+lfp.palette <- unlist(named.palette, use.names=FALSE)
+# To use for fills, add
+#  scale_fill_manual(values=lfp.palette)
+# To use for line and point colors, add
+#  scale_colour_manual(values=lfp.palette)
+
 external.data = mtcars
 # external.data = read.csv("mtcars.csv", row.names = "X")
 manual.parameter = 100
@@ -48,38 +73,41 @@ You can change these parameters by changing the URL, for instance try to visit: 
 When you click the download or email buttons to the left, a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
 ```{r}
-# code is shown for reference but can be hidden
+# code is shown for reference but can be hidden using echo=FALSE
 params$one + params$two + params$three + params$four
 ```
 
 You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
+```{r pressure, echo=FALSE, message=FALSE, warning=FALSE}
 # bar plot vertical
-counts <- table(external.data$cyl)
-barplot(counts, main="Cylinder Distribution")
+bar.plot <- ggplot(external.data, aes(factor(cyl), fill=factor(cyl))) +
+  geom_bar() + scale_fill_manual(values=sample(lfp.palette))
+show(bar.plot)
 # bar plot horizontal
-barplot(counts, main="Cylinder Distribution", horiz=TRUE)
-# pie chart w/ percents
-slices <- c(params$one, params$two, params$three, params$four, params$five) 
-lbls <- c("one", "two", "three", "four", "five")
-pct <- round(slices/sum(slices)*100)
-lbls <- paste(lbls, pct) # add percents to labels 
-lbls <- paste(lbls,"%",sep="") # ad % to labels 
-pie(slices,labels = lbls, col=rainbow(length(lbls)),
-  	main="Pie Chart of Params")
+horizontal.bar.plot <- bar.plot + coord_flip()
+show(horizontal.bar.plot)
+# pie chart
+pie.df <- data.frame(
+  group = c("one", "two", "three", "four", "five"),
+  value = c(params$one, params$two, params$three, params$four, params$five) 
+  )
+pie <- ggplot(pie.df, aes(x="", y=value, fill=group))+
+  geom_bar(width = 1, stat = "identity") +
+  coord_polar("y", start=0) + scale_fill_manual(values=sample(lfp.palette))
+show(pie)
 # dot plot
-# Sort by mpg, group and color by cylinder 
-x <- external.data[order(external.data$mpg),] # sort by mpg
-x$cyl <- factor(x$cyl) # it must be a factor
-x$color[x$cyl==4] <- "red"
-x$color[x$cyl==6] <- "blue"
-x$color[x$cyl==8] <- "darkgreen"	
-dotchart(x$mpg,labels=row.names(x),cex=.7,groups= x$cyl,
-  	main="Gas Milage for Car Models\ngrouped by cylinder",
-   xlab="Miles Per Gallon", gcolor="black", color=x$color)
+dot.plot <- ggplot(external.data, aes(x = factor(vs), fill = factor(cyl), y = mpg)) +
+  geom_dotplot(binaxis = "y", stackdir = "center", position = "dodge") +
+  scale_fill_manual(values=sample(lfp.palette))
+show(dot.plot)
 # 2d Scatterplot which highlights requester case (x y coordinates from URL)
-plot(external.data[, c("mpg","disp")])
-points(params$three, params$four, col="red", pch=19)
+new.point <- data.frame(mpg=params$three,
+                        disp=params$four)
+scatterplot <- ggplot(external.data, aes(mpg, disp)) + geom_point(size=1) + 
+  geom_point(data=new.point, colour=sample(lfp.palette,1)) +
+  geom_text(data=new.point, label="You", vjust=2)
+  
+show(scatterplot)
 
 ```

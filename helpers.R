@@ -14,6 +14,10 @@ blankIfNull <- function(log.entry){
 
 logEvent <- function(session, url.parameters, event.variables,
                      log.spreadsheet=gs_key("1oIjzlDp8j617Ngqo9BCJtkrL192OzgTzPdwFDH34rqM")){
+  
+  if(offline){
+    return()
+  }
   params <- url.parameters[names(url.parameters)!="survey"]
   redirect.url = blankIfNull(paste(lapply(names(params), function(x, params) paste(c(x,params[x]), collapse = "="), params=params), collapse="&"))
   survey = blankIfNull(url.parameters$survey)
@@ -53,11 +57,13 @@ renderMyDocument <- function(variables, mdType,
     survey.name <- variables$survey
   }
   
-  reference.data <- data.frame(gs_read(ss=log.spreadsheet, ws = "Reference"))
-  dd <- reference.data[reference.data$Survey==survey.name,c("Parameter","Value")]
-  if(nrow(dd)){
-    ref.variables <- setNames(dd$Value, paste0("ref.",as.character(dd$Parameter)))
-    variables <- c(variables, ref.variables)
+  if(!offline){
+    reference.data <- data.frame(gs_read(ss=log.spreadsheet, ws = "Reference"))
+    dd <- reference.data[reference.data$Survey==survey.name,c("Parameter","Value")]
+    if(nrow(dd)){
+      ref.variables <- setNames(dd$Value, paste0("ref.",as.character(dd$Parameter)))
+      variables <- c(variables, ref.variables)
+    }
   }
   
   report.name = paste0(survey.name,".Rmd")

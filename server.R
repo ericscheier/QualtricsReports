@@ -21,7 +21,14 @@ library(mailR)
 library(googlesheets)
 
 source("helpers.R")
-suppressMessages(gs_auth(token = "googlesheets_token.rds", verbose = FALSE))
+# For RStudio debugging only, in order to prevent logging via gsheets which takes time
+offline <<- FALSE #TRUE
+
+if(!offline){
+  suppressMessages(gs_auth(token = "googlesheets_token.rds", verbose = FALSE))
+}
+
+
 
 
 shinyServer(function(input, output, session) {
@@ -85,6 +92,7 @@ shinyServer(function(input, output, session) {
                                            message = 'Error sending email, please try again.')
                  }
                )
+      
       logEvent(session=session, url.parameters=reactiveValuesToList(parameters), event.variables=list(event="email",notes=input$email))
     })
   })

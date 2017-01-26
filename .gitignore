@@ -2,5 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+.RDS
 
 .email
+.httr-oauth
