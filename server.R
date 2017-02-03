@@ -15,14 +15,23 @@
 
 
 library(shiny)
+library(shinyjs)
 library(knitr)
 library(rmarkdown)
 library(mailR)
 library(googlesheets)
+# library(sysfonts)
+
+# font.add.google("Montserrat", "Montserrat")
+# dir.create('fonts') 
+# http://fonts.googleapis.com/css?family=Montserrat
+# download.file("http://fonts.gstatic.com/s/montserrat/v9/zhcz-_WihjSQC0oHJ9TCYPk_vArhqVIZ0nv9q090hN8.woff2",'fonts/Montserrat')
+# system('fc-cache -f fonts')
 
 source("helpers.R")
+# options(timeout = 90)
 # For RStudio debugging only, in order to prevent logging via gsheets which takes time
-offline <<- FALSE #TRUE
+offline <<- FALSE
 
 if(!offline){
   suppressMessages(gs_auth(token = "googlesheets_token.rds", verbose = FALSE))
@@ -32,6 +41,9 @@ if(!offline){
 
 
 shinyServer(function(input, output, session) {
+  
+  useShinyjs(html = TRUE)
+  hide(id = "emailing-content")
   
   parameters <- reactiveValues()
   
@@ -48,14 +60,11 @@ shinyServer(function(input, output, session) {
 
   })
   
-  # output$parameters <- 
-  
   output$markdown <- renderUI({
-    includeMarkdown(renderMyDocument(variables=reactiveValuesToList(parameters), mdType = "Markdown"))
-    # HTML(markdown::markdownToHTML(knit('report.Rmd', quiet = TRUE)))
-    # includeMarkdown('report.Rmd')
+    md <- includeMarkdown(renderMyDocument(variables=reactiveValuesToList(parameters), mdType = "Markdown"))
+    hide(id = "loading-content")
+    return(md)
   })
-  
   
   output$report = downloadHandler(
     filename = function() {"survey_report.pdf"},
@@ -81,6 +90,7 @@ shinyServer(function(input, output, session) {
       return(NULL)
     # Use isolate() to avoid dependency on input$email.button
     isolate({
+      show(id = "emailing-content")
       # validate(
       #   need(try(emailMyDocument(parameters=parameters, email.address=input$email)),
       #        'Error sending email, please try again.')
@@ -90,7 +100,8 @@ shinyServer(function(input, output, session) {
                  print("Email unsuccessful")
                  session$sendCustomMessage(type = 'testmessage',
                                            message = 'Error sending email, please try again.')
-                 }
+                 },
+               finally = {hide(id = "emailing-content")}
                )
       
       logEvent(session=session, url.parameters=reactiveValuesToList(parameters), event.variables=list(event="email",notes=input$email))

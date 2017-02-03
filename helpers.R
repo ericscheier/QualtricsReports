@@ -74,6 +74,23 @@ renderMyDocument <- function(variables, mdType,
   #           copy.mode = TRUE, copy.date = FALSE)
   tempReport <- file.path(tempdir(), report.name)
   file.copy(report.name, tempReport, overwrite = TRUE)
+  template.name <- "lfp_template.tex"
+  if(mdType=="PDF"){
+    tempTemplate <- file.path(tempdir(), template.name)
+    file.copy(template.name, tempTemplate, overwrite = TRUE)
+    logo.name <- "LFP_vertical_tagline.png"
+    tempLogo <- file.path(tempdir(), logo.name)
+    file.copy(logo.name, tempLogo, overwrite = TRUE)
+    
+    if(!dir.exists(file.path(tempdir(),'fonts'))){
+      dir.create(file.path(tempdir(),'fonts'))
+    }
+    font.path = "fonts/Montserrat-Regular.otf"
+    file.copy(from=font.path, #paste0("/fonts/",list.files(path="./fonts"))
+              to=file.path(tempdir(),font.path),
+              overwrite = TRUE)
+    
+  }
   # owd <- setwd(tempdir())
   # on.exit(setwd(owd))
   # file.copy(src, report.name)
@@ -89,7 +106,8 @@ renderMyDocument <- function(variables, mdType,
   rmarkdown::render(tempReport, params = variables, 
                     envir = new.env(parent = globalenv()), 
                     switch(mdType, 
-            PDF = pdf_document(), HTML = html_document(), Word = word_document(), Markdown = md_document()))
+            PDF = pdf_document(latex_engine = "lualatex", template=tempTemplate), HTML = html_document(), Word = word_document(), Markdown = md_document()))
+  # return(doc)
 }
 
 source(".email")
