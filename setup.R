@@ -1,4 +1,14 @@
 # Run this script to setup user-specified parameters before uploading to shinyapps.io
+
+# If you haven't already, install the required packages using the code below:
+install.packages("shiny")
+install.packages("shinyjs")
+install.packages("knitr")
+install.packages("rmarkdown")
+install.packages("mailR")
+install.packages("googlesheets")
+
+# Authenticate with google to enable logging (make sure you use a google account that has write access to the logging document)
 library(googlesheets)
 token <- gs_auth(cache = FALSE)
 gd_token()

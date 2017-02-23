@@ -112,7 +112,7 @@ renderMyDocument <- function(variables, mdType,
 
 source(".email")
 emailReport <- function(email.params){
-  send.mail(from = "eric.scheier.test@gmail.com",
+  send.mail(from = email.credentials$email.address,
             to = email.params$to,
             subject <- "Survey Report",
             body <- "Please see attached for a copy of your survey report.",

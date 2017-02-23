@@ -1,0 +1,1 @@
+email.credentials = list(email.address = "email.username@host.com", user.name = "email.username", passwd = "email.password")
