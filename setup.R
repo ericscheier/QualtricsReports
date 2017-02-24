@@ -7,6 +7,7 @@ install.packages("knitr")
 install.packages("rmarkdown")
 install.packages("mailR")
 install.packages("googlesheets")
+install.packages("rsconnect")
 
 # Authenticate with google to enable logging (make sure you use a google account that has write access to the logging document)
 library(googlesheets)
@@ -16,10 +17,10 @@ saveRDS(token, file = "googlesheets_token.rds")
 
 # If you haven't connected your Rstudio to Shinyapps.io, use the following commands
 # You should only have to do this once
-require('devtools')
-devtools::install_github('rstudio/shinyapps')
-require('shinyapps')
-shinyapps::setAccountInfo(name='yourUserNameHere', token='yourTokenHere', secret='yourSecretHere')
+# require('devtools')
+# devtools::install_github('rstudio/rsconnect')
+require('rsconnect')
+rsconnect::setAccountInfo(name='yourUserNameHere', token='yourTokenHere', secret='yourSecretHere')
 
 # Deploy the application
 library(rsconnect)
