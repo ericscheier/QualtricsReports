@@ -27,7 +27,7 @@ The Qualtrics Reporting App is designed to present survey participants with a cu
     - `git pull origin master` while in the QualtricsReports folder on your local machine
 2. Open QualtricsReports.Rproj from within the source code folder (should open in RStudio)
 3. Add your send-from email address credentials by doing the following:
-  a. Create a copy of the file `.email_base` and name it `.email`. Edit `.email` to include your email username and password.
+  a. Create a copy of the file `email_base.txt` and name it `email.txt`. Edit `email.txt` to include your email username and password.
   b. Make sure that the email account information in the `emailReport` function in `helpers.R` is correct for your use-case. For instance, if you use a host other than gmail you will need to adjust the `smtp` setting here.
 4. Make sure that you have all of the relevant packages installed. If not, you will get an error “there is no package called ‘X’” . To solve this, use install.packages(“X”) in Rstudio before running the app. Here are the packages required by the application:
 ```{r packages, eval=FALSE}
@@ -37,19 +37,18 @@ install.packages("knitr")
 install.packages("rmarkdown")
 install.packages("mailR")
 install.packages("googlesheets")
-install.packages('devtools')
-install.packages('shinyapps')
 install.packages('rsconnect')
+install.packages('httr')
 ```
-5. Test that the application runs locally on your machine by opening server.R and pressing the “Run App” button in the top right corner of the code window. Depending on your settings it will open in a pop-up window, an embedded Rstudio window, or a browser tab.
-Run the code in setup.R line by line to accomplish the following steps (ctrl+Enter with your cursor on the line you want to run). This step will:
-6. Authenticate with google to enable logging (make sure you use a google account that has write access to the logging document)
+5. Test that the application runs locally on your machine by opening server.R and pressing the “Run App” button in the top right corner of the code window. Depending on your settings it will open in a pop-up window, an embedded Rstudio window, or a browser tab. When you are finished, or if you receive an error, remember to press the stop sign to stop the application from running.
+6. Authenticate with google to enable logging (make sure you login with a google account that has write access to the logging document)
 ```{r google_oauth, eval=FALSE}
 library(googlesheets)
 token <- gs_auth(cache = FALSE)
 gd_token()
 saveRDS(token, file = "googlesheets_token.rds")
 ```
+8. Change `offline <<- TRUE` to `offline <<- FALSE` in `server.R`. Save and test the application locally again to ensure that logging is working.
 7. Link your Rstudio to your ShinyApps account (should only have to do this once)
 ```{r shinyapps_link, eval=FALSE}
 require('devtools')

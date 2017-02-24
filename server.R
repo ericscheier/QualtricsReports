@@ -31,7 +31,7 @@ library(googlesheets)
 source("helpers.R")
 # options(timeout = 90)
 # For RStudio debugging only, in order to prevent logging via gsheets which takes time
-offline <<- FALSE
+offline <<- TRUE #FALSE
 
 if(!offline){
   suppressMessages(gs_auth(token = "googlesheets_token.rds", verbose = FALSE))

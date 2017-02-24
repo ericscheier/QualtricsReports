@@ -110,7 +110,7 @@ renderMyDocument <- function(variables, mdType,
   # return(doc)
 }
 
-source("email")
+source("email.txt")
 emailReport <- function(email.params){
   send.mail(from = email.credentials$email.address,
             to = email.params$to,
