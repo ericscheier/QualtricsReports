@@ -13,7 +13,7 @@ blankIfNull <- function(log.entry){
 }
 
 logEvent <- function(session, url.parameters, event.variables,
-                     log.spreadsheet=gs_key("1oIjzlDp8j617Ngqo9BCJtkrL192OzgTzPdwFDH34rqM")){
+                     log.spreadsheet=gs_key(log.spreadsheet.id)){
   
   if(offline){
     return()
@@ -49,7 +49,7 @@ parseURL <- function(query, variable, parameters){
 # }
 
 renderMyDocument <- function(variables, mdType, 
-                             log.spreadsheet=gs_key("1oIjzlDp8j617Ngqo9BCJtkrL192OzgTzPdwFDH34rqM")) { #, r_env=parent.frame()
+                             log.spreadsheet=gs_key(log.spreadsheet.id)) { #, r_env=parent.frame()
   if(is.null(variables$survey)){
     print("survey is null")
     survey.name <- "ExampleReport"
@@ -66,28 +66,31 @@ renderMyDocument <- function(variables, mdType,
     }
   }
   
-  report.name = paste0(survey.name,".Rmd")
-  src <- normalizePath(report.name)
+  report.file <- paste0(survey.name,".Rmd")
+  report.name = paste0("report_templates/",report.file)
+  # src <- normalizePath(report.name)
   # temporarily switch to the temp dir, in case you do not have write
   # permission to the current working directory
   # file.copy(from, to, overwrite = recursive, recursive = FALSE,
   #           copy.mode = TRUE, copy.date = FALSE)
-  tempReport <- file.path(tempdir(), report.name)
+  tempReport <- file.path(tempdir(), report.file)
   file.copy(report.name, tempReport, overwrite = TRUE)
-  template.name <- "lfp_template.tex"
+  template.file <- "lfp_template.tex"
+  template.name = paste0("report_templates/",template.file)
   if(mdType=="PDF"){
-    tempTemplate <- file.path(tempdir(), template.name)
+    tempTemplate <- file.path(tempdir(), template.file)
     file.copy(template.name, tempTemplate, overwrite = TRUE)
-    logo.name <- "LFP_vertical_tagline.png"
+    logo.name <- "www/LFP_vertical_tagline.png"
     tempLogo <- file.path(tempdir(), logo.name)
     file.copy(logo.name, tempLogo, overwrite = TRUE)
     
     if(!dir.exists(file.path(tempdir(),'fonts'))){
       dir.create(file.path(tempdir(),'fonts'))
     }
-    font.path = "fonts/Montserrat-Regular.otf"
+    font.name = "fonts/Montserrat-Regular.otf"
+    font.path <- paste0("report_templates/",font.name)
     file.copy(from=font.path, #paste0("/fonts/",list.files(path="./fonts"))
-              to=file.path(tempdir(),font.path),
+              to=file.path(tempdir(),font.name),
               overwrite = TRUE)
     
   }
@@ -110,13 +113,12 @@ renderMyDocument <- function(variables, mdType,
   # return(doc)
 }
 
-source("email.txt")
 emailReport <- function(email.params){
-  send.mail(from = email.credentials$email.address,
+  send.mail(from = paste0(app.settings$email.username,"@gmail.com"),
             to = email.params$to,
             subject <- "Survey Report",
             body <- "Please see attached for a copy of your survey report.",
-            smtp = list(host.name = "smtp.gmail.com", port = 465, user.name = email.credentials$user.name, passwd = email.credentials$passwd, ssl = TRUE),
+            smtp = list(host.name = "smtp.gmail.com", port = 465, user.name = app.settings$email.username, passwd = app.settings$email.password, ssl = TRUE),
             authenticate = TRUE,
             html = TRUE,
             send = TRUE,

@@ -1,0 +1,10 @@
+app.settings = list(
+  email.username = "email.username",
+  email.password = "email.password",
+  shiny.username = "yourUserNameHere",
+  shiny.token = "yourTokenHere",
+  shiny.secret = "yourSecretHere",
+  app.name = "QualtricsReports",
+  log.spreadsheet.id = "1oIjzlDp8j617Ngqo9BCJtkrL192OzgTzPdwFDH34rqM",
+  offline.for.debugging = FALSE
+)

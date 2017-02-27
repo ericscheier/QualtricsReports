@@ -4,6 +4,8 @@
 .Ruserdata
 .RDS
 
-.email
+
 .httr-oauth
-email.txt
+settings.txt
+
+development

@@ -1,45 +1,5 @@
 
 # This is the server logic for a Shiny web application.
-# You can find out more about building applications with Shiny here:
-#
-# http://shiny.rstudio.com
-
-# sudo apt-get install r-cran-rjava
-
-# https://github.com/daattali/advanced-shiny/tree/master/url-inputs
-# http://127.0.0.1:5026/?name=ramon&age=30
-# http://127.0.0.1:5026/?1=2.6&2=4.5&3=2.5&4=4.5&5=5&6=1.25&7=5&8=5&9=2&10=2&11=2&12=4&13=1.4&14=4&15=5&16=3.8&17=3&18=3&19=5&20=3.6&21=2.3&22=5
-
-# /?survey=report&one=10&two=20&three=30&four=40&five=50
-# https://github.com/rpremraj/mailR
-
-
-library(shiny)
-library(shinyjs)
-library(knitr)
-library(rmarkdown)
-library(mailR)
-library(googlesheets)
-# library(sysfonts)
-
-# font.add.google("Montserrat", "Montserrat")
-# dir.create('fonts') 
-# http://fonts.googleapis.com/css?family=Montserrat
-# download.file("http://fonts.gstatic.com/s/montserrat/v9/zhcz-_WihjSQC0oHJ9TCYPk_vArhqVIZ0nv9q090hN8.woff2",'fonts/Montserrat')
-# system('fc-cache -f fonts')
-
-source("helpers.R")
-# options(timeout = 90)
-# For RStudio debugging only, in order to prevent logging via gsheets which takes time
-offline <<- TRUE #FALSE
-
-if(!offline){
-  suppressMessages(gs_auth(token = "googlesheets_token.rds", verbose = FALSE))
-}
-
-
-
-
 shinyServer(function(input, output, session) {
   
   useShinyjs(html = TRUE)
